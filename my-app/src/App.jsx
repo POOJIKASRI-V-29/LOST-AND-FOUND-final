@@ -1,23 +1,16 @@
 import { useState, useEffect, useCallback } from "react";
 
-// ============================================================
-// THIRD-PARTY API 1: Leaflet Map (OpenStreetMap) loaded via CDN
-// THIRD-PARTY API 2: Claude AI for item description & matching
-// ============================================================
-
-// ─── MOCK DATA ───────────────────────────────────────────────
 const MOCK_ITEMS = [
-  { id: 1, type: "lost", title: "Blue Leather Wallet", category: "Accessories", location: "Central Park, NYC", date: "2026-03-20", description: "Navy blue leather wallet with initials 'JD'. Contains ID cards and family photos.", image: "👜", status: "active", lat: 40.7851, lng: -73.9683, contact: "john@email.com" },
-  { id: 2, type: "found", title: "iPhone 15 Pro (Black)", category: "Electronics", location: "Times Square Station", date: "2026-03-22", description: "Black iPhone 15 Pro found near the subway exit. Has a cracked screen protector.", image: "📱", status: "active", lat: 40.7580, lng: -73.9855, contact: "sarah@email.com" },
-  { id: 3, type: "lost", title: "Golden Retriever - Max", category: "Pets", location: "Brooklyn Bridge", date: "2026-03-23", description: "Male golden retriever, 3 years old, wearing a red collar with tag 'Max'.", image: "🐕", status: "active", lat: 40.7061, lng: -73.9969, contact: "mike@email.com" },
-  { id: 4, type: "found", title: "Car Keys with Fob", category: "Keys", location: "Grand Central Station", date: "2026-03-24", description: "Toyota car keys with a blue keychain bear. Found near ticket booth.", image: "🔑", status: "active", lat: 40.7527, lng: -73.9772, contact: "anna@email.com" },
-  { id: 5, type: "lost", title: "MacBook Pro 14-inch", category: "Electronics", location: "Brooklyn Coffee Shop", date: "2026-03-25", description: "Silver MacBook Pro with stickers on back. Has a dent on corner.", image: "💻", status: "active", lat: 40.6892, lng: -73.9442, contact: "dev@email.com" },
-  { id: 6, type: "found", title: "Black Backpack", category: "Bags", location: "Central Park South", date: "2026-03-21", description: "Large black backpack with books and gym clothes inside. No ID found.", image: "🎒", status: "active", lat: 40.7641, lng: -73.9736, contact: "finder@email.com" },
+  { id: 1, type: "lost", title: "Blue Leather Wallet", category: "Accessories", location: "Vellore Fort, Vellore", date: "2026-03-20", description: "Navy blue leather wallet with initials 'JD'. Contains ID cards and family photos.", image: "👜", status: "active", lat: 12.9202, lng: 79.1333, contact: "john@email.com" },
+  { id: 2, type: "found", title: "iPhone 15 Pro (Black)", category: "Electronics", location: "CMC Hospital, Vellore", date: "2026-03-22", description: "Black iPhone 15 Pro found near the hospital entrance. Has a cracked screen protector.", image: "📱", status: "active", lat: 12.9249, lng: 79.1325, contact: "sarah@email.com" },
+  { id: 3, type: "lost", title: "Golden Retriever - Max", category: "Pets", location: "VIT University Campus, Vellore", date: "2026-03-23", description: "Male golden retriever, 3 years old, wearing a red collar with tag 'Max'.", image: "🐕", status: "active", lat: 12.9698, lng: 79.1559, contact: "mike@email.com" },
+  { id: 4, type: "found", title: "Car Keys with Fob", category: "Keys", location: "Vellore Bus Stand", date: "2026-03-24", description: "Toyota car keys with a blue keychain bear. Found near the main ticket counter.", image: "🔑", status: "active", lat: 12.9165, lng: 79.1317, contact: "anna@email.com" },
+  { id: 5, type: "lost", title: "MacBook Pro 14-inch", category: "Electronics", location: "Katpadi Junction, Vellore", date: "2026-03-25", description: "Silver MacBook Pro with stickers on back. Has a dent on corner.", image: "💻", status: "active", lat: 12.9716, lng: 79.1452, contact: "dev@email.com" },
+  { id: 6, type: "found", title: "Black Backpack", category: "Bags", location: "Sripuram Golden Temple, Vellore", date: "2026-03-21", description: "Large black backpack with books and clothing inside. No ID found.", image: "🎒", status: "active", lat: 12.8993, lng: 79.1528, contact: "finder@email.com" },
 ];
 
 const CATEGORIES = ["All", "Electronics", "Accessories", "Pets", "Keys", "Bags", "Documents", "Jewelry", "Clothing", "Other"];
 
-// ─── CSS STYLES ──────────────────────────────────────────────
 const GlobalStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
@@ -37,13 +30,26 @@ const GlobalStyle = () => (
       --card-bg: #ffffff;
     }
 
-    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); }
+    html, body, #root {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+    }
 
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: var(--cream); }
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    .app { min-height: 100vh; display: flex; flex-direction: column; }
+    .app {
+      min-height: 100vh;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
 
     /* NAV */
     nav {
@@ -53,6 +59,7 @@ const GlobalStyle = () => (
       padding: 0 2rem;
       display: flex; align-items: center; justify-content: space-between;
       height: 64px;
+      width: 100%;
     }
     .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 2px; color: var(--paper); cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
     .nav-logo span { color: var(--accent); }
@@ -69,6 +76,7 @@ const GlobalStyle = () => (
       padding: 5rem 2rem 4rem;
       position: relative;
       overflow: hidden;
+      width: 100%;
     }
     .hero::before {
       content: 'LOST & FOUND';
@@ -93,13 +101,14 @@ const GlobalStyle = () => (
     .btn-outline:hover { border-color: var(--ink); background: var(--cream); }
 
     /* STATS BAR */
-    .stats-bar { background: var(--accent); color: #fff; padding: 1rem 2rem; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+    .stats-bar { background: var(--accent); color: #fff; padding: 1rem 2rem; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; width: 100%; }
     .stat { text-align: center; }
     .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; line-height: 1; }
     .stat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.85; }
 
     /* MAIN CONTENT */
-    main { flex: 1; max-width: 1200px; margin: 0 auto; width: 100%; padding: 2.5rem 2rem; }
+    main { flex: 1; width: 100%; padding: 2.5rem 2rem; }
+    .main-inner { max-width: 1200px; margin: 0 auto; width: 100%; }
 
     /* PAGE TITLE */
     .page-header { margin-bottom: 2.5rem; }
@@ -201,7 +210,7 @@ const GlobalStyle = () => (
     .view-all:hover { text-decoration: underline; }
 
     /* FOOTER */
-    footer { background: var(--ink); color: rgba(245,240,232,0.6); text-align: center; padding: 1.5rem; font-size: 0.82rem; border-top: 3px solid var(--accent); margin-top: auto; }
+    footer { background: var(--ink); color: rgba(245,240,232,0.6); text-align: center; padding: 1.5rem; font-size: 0.82rem; border-top: 3px solid var(--accent); margin-top: auto; width: 100%; }
     footer strong { color: var(--paper); }
 
     /* TOAST */
@@ -220,7 +229,6 @@ const GlobalStyle = () => (
   `}</style>
 );
 
-// ─── COMPONENT 1: StatusBadge ─────────────────────────────────
 function StatusBadge({ type, status, category, variant = "type" }) {
   if (variant === "category") return <span className="badge badge-cat">{category}</span>;
   if (variant === "status") {
@@ -230,7 +238,6 @@ function StatusBadge({ type, status, category, variant = "type" }) {
   return <span className={`badge badge-${type}`}>{type === "lost" ? "🔍 Lost" : "✅ Found"}</span>;
 }
 
-// ─── COMPONENT 2: SearchFilter ────────────────────────────────
 function SearchFilter({ onFilter }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
@@ -240,22 +247,9 @@ function SearchFilter({ onFilter }) {
     onFilter({ query: newQuery, category: newCat, type: newType });
   }, [onFilter]);
 
-  const handleSearch = (e) => {
-    const val = e.target.value;
-    setQuery(val);
-    handleChange(val, category, typeFilter);
-  };
-
-  const handleCat = (e) => {
-    const val = e.target.value;
-    setCategory(val);
-    handleChange(query, val, typeFilter);
-  };
-
-  const handleType = (t) => {
-    setTypeFilter(t);
-    handleChange(query, category, t);
-  };
+  const handleSearch = (e) => { const val = e.target.value; setQuery(val); handleChange(val, category, typeFilter); };
+  const handleCat = (e) => { const val = e.target.value; setCategory(val); handleChange(query, val, typeFilter); };
+  const handleType = (t) => { setTypeFilter(t); handleChange(query, category, t); };
 
   return (
     <div className="search-filter">
@@ -283,7 +277,6 @@ function SearchFilter({ onFilter }) {
   );
 }
 
-// ─── COMPONENT 3: ItemCard ────────────────────────────────────
 function ItemCard({ item, onClick }) {
   return (
     <div className="item-card" onClick={() => onClick(item)}>
@@ -294,9 +287,7 @@ function ItemCard({ item, onClick }) {
           <StatusBadge variant="category" category={item.category} />
         </div>
         <div className="card-title">{item.title}</div>
-        <div className="card-meta">
-          <span>📍 {item.location}</span>
-        </div>
+        <div className="card-meta"><span>📍 {item.location}</span></div>
         <p className="card-desc">{item.description}</p>
       </div>
       <div className="card-footer">
@@ -307,7 +298,6 @@ function ItemCard({ item, onClick }) {
   );
 }
 
-// ─── ITEM DETAIL MODAL ────────────────────────────────────────
 function ItemModal({ item, onClose }) {
   if (!item) return null;
   return (
@@ -341,13 +331,11 @@ function ItemModal({ item, onClose }) {
   );
 }
 
-// ─── TOAST NOTIFICATION ────────────────────────────────────────
 function Toast({ msg, type, onDone }) {
   useEffect(() => { const t = setTimeout(onDone, 3000); return () => clearTimeout(t); }, [onDone]);
   return <div className={`toast ${type}`}>{type === "success" ? "✅" : "❌"} {msg}</div>;
 }
 
-// ─── PAGE: HOME ───────────────────────────────────────────────
 function HomePage({ setPage, items }) {
   const recent = items.slice(0, 4);
   const [modal, setModal] = useState(null);
@@ -355,9 +343,9 @@ function HomePage({ setPage, items }) {
     <>
       <div className="hero">
         <div className="hero-inner">
-          <div className="hero-tag">🔍 Community Lost & Found</div>
+          <div className="hero-tag">🔍 Vellore District Lost & Found</div>
           <h1>Find What's <em>Lost.</em><br />Return What's <em>Found.</em></h1>
-          <p>A community-powered platform to reunite people with their lost belongings. Post, search, and connect — together we find everything.</p>
+          <p>A community-powered platform for Vellore district to reunite people with their lost belongings. Post, search, and connect — together we find everything.</p>
           <div className="hero-btns">
             <button className="btn btn-primary" onClick={() => setPage("report")}>📝 Report an Item</button>
             <button className="btn btn-secondary" onClick={() => setPage("browse")}>🗂 Browse All Items</button>
@@ -370,26 +358,28 @@ function HomePage({ setPage, items }) {
         ))}
       </div>
       <main>
-        <div className="features">
-          {[
-            ["🤖", "AI-Powered Matching", "Our Claude AI analyzes descriptions to find potential matches between lost and found items automatically."],
-            ["🗺️", "Map Integration", "Pin exact locations on an interactive map powered by OpenStreetMap to improve search accuracy."],
-            ["🔔", "Instant Alerts", "Get notified the moment a matching item is reported by community members near you."],
-            ["🔒", "Safe & Secure", "Contact info is protected. Connect through our secure messaging system to stay private."],
-          ].map(([icon, title, desc]) => (
-            <div key={title} className="feature-card">
-              <div className="feature-icon">{icon}</div>
-              <div className="feature-title">{title}</div>
-              <div className="feature-desc">{desc}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "3rem", marginBottom: "1.25rem" }}>
-          <h2 className="recent-title" style={{ margin: 0 }}>Recent Reports</h2>
-          <button className="view-all" onClick={() => setPage("browse")}>View All →</button>
-        </div>
-        <div className="items-grid">
-          {recent.map(item => <ItemCard key={item.id} item={item} onClick={setModal} />)}
+        <div className="main-inner">
+          <div className="features">
+            {[
+              ["🤖", "AI-Powered Matching", "Our Claude AI analyzes descriptions to find potential matches between lost and found items automatically."],
+              ["🗺️", "Map Integration", "Pin exact locations on an interactive map powered by OpenStreetMap to improve search accuracy."],
+              ["🔔", "Instant Alerts", "Get notified the moment a matching item is reported by community members near you."],
+              ["🔒", "Safe & Secure", "Contact info is protected. Connect through our secure messaging system to stay private."],
+            ].map(([icon, title, desc]) => (
+              <div key={title} className="feature-card">
+                <div className="feature-icon">{icon}</div>
+                <div className="feature-title">{title}</div>
+                <div className="feature-desc">{desc}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "3rem", marginBottom: "1.25rem" }}>
+            <h2 className="recent-title" style={{ margin: 0 }}>Recent Reports</h2>
+            <button className="view-all" onClick={() => setPage("browse")}>View All →</button>
+          </div>
+          <div className="items-grid">
+            {recent.map(item => <ItemCard key={item.id} item={item} onClick={setModal} />)}
+          </div>
         </div>
       </main>
       {modal && <ItemModal item={modal} onClose={() => setModal(null)} />}
@@ -397,7 +387,6 @@ function HomePage({ setPage, items }) {
   );
 }
 
-// ─── PAGE: BROWSE ─────────────────────────────────────────────
 function BrowsePage({ items }) {
   const [filtered, setFiltered] = useState(items);
   const [modal, setModal] = useState(null);
@@ -416,29 +405,30 @@ function BrowsePage({ items }) {
 
   return (
     <main>
-      <div className="page-header">
-        <h2>Browse Items</h2>
-        <div className="divider"></div>
-        <p>{filtered.length} item{filtered.length !== 1 ? "s" : ""} found in the database</p>
+      <div className="main-inner">
+        <div className="page-header">
+          <h2>Browse Items</h2>
+          <div className="divider"></div>
+          <p>{filtered.length} item{filtered.length !== 1 ? "s" : ""} found in the database</p>
+        </div>
+        <SearchFilter onFilter={handleFilter} />
+        {filtered.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-icon">🔍</div>
+            <h3>No items match your search</h3>
+            <p>Try adjusting your filters or search term</p>
+          </div>
+        ) : (
+          <div className="items-grid">
+            {filtered.map(item => <ItemCard key={item.id} item={item} onClick={setModal} />)}
+          </div>
+        )}
+        {modal && <ItemModal item={modal} onClose={() => setModal(null)} />}
       </div>
-      <SearchFilter onFilter={handleFilter} />
-      {filtered.length === 0 ? (
-        <div className="empty-state">
-          <div className="empty-icon">🔍</div>
-          <h3>No items match your search</h3>
-          <p>Try adjusting your filters or search term</p>
-        </div>
-      ) : (
-        <div className="items-grid">
-          {filtered.map(item => <ItemCard key={item.id} item={item} onClick={setModal} />)}
-        </div>
-      )}
-      {modal && <ItemModal item={modal} onClose={() => setModal(null)} />}
     </main>
   );
 }
 
-// ─── PAGE: REPORT (with Claude AI + Leaflet Map) ──────────────
 function ReportPage({ onSubmit }) {
   const [formType, setFormType] = useState("lost");
   const [form, setForm] = useState({ title: "", category: "Electronics", location: "", date: "", description: "", contact: "" });
@@ -447,7 +437,6 @@ function ReportPage({ onSubmit }) {
   const [aiLoading, setAiLoading] = useState(false);
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  // Load Leaflet (API 1)
   useEffect(() => {
     if (document.getElementById("leaflet-css")) { setMapLoaded(true); return; }
     const css = document.createElement("link");
@@ -464,7 +453,8 @@ function ReportPage({ onSubmit }) {
     if (!mapLoaded || !window.L) return;
     const existing = document.getElementById("leaflet-map");
     if (!existing || existing._leaflet_id) return;
-    const map = window.L.map("leaflet-map").setView([40.7128, -74.006], 12);
+    // Centered on Vellore district
+    const map = window.L.map("leaflet-map").setView([12.9165, 79.1325], 13);
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
     }).addTo(map);
@@ -478,7 +468,6 @@ function ReportPage({ onSubmit }) {
 
   const handleField = (e) => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  // Claude AI description helper (API 2)
   const handleAI = async () => {
     if (!form.title || !form.category) return;
     setAiLoading(true); setAiResult("");
@@ -489,8 +478,8 @@ function ReportPage({ onSubmit }) {
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
-          system: "You are a helpful assistant for a lost and found website. Generate a clear, detailed, and helpful item description that will help identify the item. Include key identifying features, possible condition details, and why someone might recognize it. Keep it under 80 words. Return plain text only.",
-          messages: [{ role: "user", content: `Generate a description for a ${formType} ${form.category} item named: "${form.title}". Location: ${form.location || "unknown"}.` }]
+          system: "You are a helpful assistant for a lost and found website in Vellore district, Tamil Nadu, India. Generate a clear, detailed, and helpful item description that will help identify the item. Include key identifying features, possible condition details, and why someone might recognize it. Keep it under 80 words. Return plain text only.",
+          messages: [{ role: "user", content: `Generate a description for a ${formType} ${form.category} item named: "${form.title}". Location: ${form.location || "Vellore district, Tamil Nadu"}.` }]
         })
       });
       const data = await res.json();
@@ -511,77 +500,79 @@ function ReportPage({ onSubmit }) {
 
   return (
     <main>
-      <div className="page-header">
-        <h2>Report an Item</h2>
-        <div className="divider"></div>
-        <p>Fill in the details below. Use AI to auto-generate a description, and pin the location on the map.</p>
-      </div>
-      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
-        {["lost", "found"].map(t => (
-          <button key={t} className={`btn ${formType === t ? (t === "lost" ? "btn-primary" : "btn-blue") : "btn-outline"}`}
-            onClick={() => setFormType(t)}>
-            {t === "lost" ? "🔍 I Lost Something" : "✅ I Found Something"}
-          </button>
-        ))}
-      </div>
-      <div className="form-container">
-        <div className="form-card">
-          <div className="form-title">{formType === "lost" ? "🔍 Lost Item" : "✅ Found Item"} Details</div>
-          <form onSubmit={handleSubmit}>
-            {[["title","Item Name *","text","e.g. Blue Leather Wallet"],["location","Location *","text","Street, landmark or coordinates"],["contact","Contact Email *","email","your@email.com"]].map(([name,label,type,ph]) => (
-              <div key={name} className="form-group">
-                <label className="form-label">{label}</label>
-                <input className="form-input" name={name} type={type} placeholder={ph} value={form[name]} onChange={handleField} />
-              </div>
-            ))}
-            <div className="form-group">
-              <label className="form-label">Category</label>
-              <select className="form-select" name="category" value={form.category} onChange={handleField}>
-                {CATEGORIES.filter(c => c !== "All").map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Date</label>
-              <input className="form-input" name="date" type="date" value={form.date} onChange={handleField} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Description</label>
-              <textarea className="form-textarea" name="description" placeholder="Describe the item..." value={form.description} onChange={handleField} />
-              <button type="button" className="ai-btn" onClick={handleAI} disabled={aiLoading}>
-                {aiLoading ? <><div className="spinner"></div> Generating...</> : "✨ Auto-Generate with AI"}
-              </button>
-              {aiResult && <div className="ai-result">🤖 <strong>AI Generated:</strong> {aiResult}</div>}
-            </div>
-            <div className="form-group">
-              <label className="form-label">Photo (optional)</label>
-              <div className={`upload-zone ${drag ? "drag" : ""}`}
-                onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
-                onDragLeave={() => setDrag(false)}
-                onDrop={(e) => { e.preventDefault(); setDrag(false); alert("Image uploaded: " + e.dataTransfer.files[0]?.name); }}>
-                <div className="upload-icon">📷</div>
-                <div className="upload-text">Drag & drop or click to upload</div>
-              </div>
-            </div>
-            <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
-              Submit Report
-            </button>
-          </form>
+      <div className="main-inner">
+        <div className="page-header">
+          <h2>Report an Item</h2>
+          <div className="divider"></div>
+          <p>Fill in the details below. Use AI to auto-generate a description, and pin the location on the map.</p>
         </div>
-        <div>
-          <div className="form-card" style={{ marginBottom: "1.5rem" }}>
-            <div className="form-title">💡 Tips</div>
-            {["Be as specific as possible in your description", "Include any unique identifying marks or features", "Mention the approximate time of loss/find", "Upload a clear photo for faster matching", "Keep your contact info updated"].map((tip, i) => (
-              <div key={i} style={{ display: "flex", gap: "0.75rem", marginBottom: "0.9rem", fontSize: "0.875rem" }}>
-                <span style={{ color: "var(--accent)", fontWeight: 700, minWidth: "1.2rem" }}>{i + 1}.</span>
-                <span style={{ color: "var(--muted)" }}>{tip}</span>
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem" }}>
+          {["lost", "found"].map(t => (
+            <button key={t} className={`btn ${formType === t ? (t === "lost" ? "btn-primary" : "btn-blue") : "btn-outline"}`}
+              onClick={() => setFormType(t)}>
+              {t === "lost" ? "🔍 I Lost Something" : "✅ I Found Something"}
+            </button>
+          ))}
+        </div>
+        <div className="form-container">
+          <div className="form-card">
+            <div className="form-title">{formType === "lost" ? "🔍 Lost Item" : "✅ Found Item"} Details</div>
+            <form onSubmit={handleSubmit}>
+              {[["title","Item Name *","text","e.g. Blue Leather Wallet"],["location","Location *","text","e.g. Vellore Fort, CMC Hospital..."],["contact","Contact Email *","email","your@email.com"]].map(([name,label,type,ph]) => (
+                <div key={name} className="form-group">
+                  <label className="form-label">{label}</label>
+                  <input className="form-input" name={name} type={type} placeholder={ph} value={form[name]} onChange={handleField} />
+                </div>
+              ))}
+              <div className="form-group">
+                <label className="form-label">Category</label>
+                <select className="form-select" name="category" value={form.category} onChange={handleField}>
+                  {CATEGORIES.filter(c => c !== "All").map(c => <option key={c}>{c}</option>)}
+                </select>
               </div>
-            ))}
+              <div className="form-group">
+                <label className="form-label">Date</label>
+                <input className="form-input" name="date" type="date" value={form.date} onChange={handleField} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <textarea className="form-textarea" name="description" placeholder="Describe the item..." value={form.description} onChange={handleField} />
+                <button type="button" className="ai-btn" onClick={handleAI} disabled={aiLoading}>
+                  {aiLoading ? <><div className="spinner"></div> Generating...</> : "✨ Auto-Generate with AI"}
+                </button>
+                {aiResult && <div className="ai-result">🤖 <strong>AI Generated:</strong> {aiResult}</div>}
+              </div>
+              <div className="form-group">
+                <label className="form-label">Photo (optional)</label>
+                <div className={`upload-zone ${drag ? "drag" : ""}`}
+                  onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+                  onDragLeave={() => setDrag(false)}
+                  onDrop={(e) => { e.preventDefault(); setDrag(false); alert("Image uploaded: " + e.dataTransfer.files[0]?.name); }}>
+                  <div className="upload-icon">📷</div>
+                  <div className="upload-text">Drag & drop or click to upload</div>
+                </div>
+              </div>
+              <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>
+                Submit Report
+              </button>
+            </form>
           </div>
-          <div className="map-section">
-            <div className="map-title">📍 Pin the Location</div>
-            <p style={{ fontSize: "0.85rem", color: "var(--muted)", marginBottom: "0.75rem" }}>Click on the map to set the exact location (OpenStreetMap)</p>
-            <div id="leaflet-map"></div>
-            {form.location && <div style={{ marginTop: "0.6rem", fontSize: "0.8rem", color: "var(--accent2)", fontFamily: "DM Mono, monospace" }}>📌 {form.location}</div>}
+          <div>
+            <div className="form-card" style={{ marginBottom: "1.5rem" }}>
+              <div className="form-title">💡 Tips</div>
+              {["Be as specific as possible in your description", "Include any unique identifying marks or features", "Mention the approximate time of loss/find", "Upload a clear photo for faster matching", "Keep your contact info updated"].map((tip, i) => (
+                <div key={i} style={{ display: "flex", gap: "0.75rem", marginBottom: "0.9rem", fontSize: "0.875rem" }}>
+                  <span style={{ color: "var(--accent)", fontWeight: 700, minWidth: "1.2rem" }}>{i + 1}.</span>
+                  <span style={{ color: "var(--muted)" }}>{tip}</span>
+                </div>
+              ))}
+            </div>
+            <div className="map-section">
+              <div className="map-title">📍 Pin the Location</div>
+              <p style={{ fontSize: "0.85rem", color: "var(--muted)", marginBottom: "0.75rem" }}>Click on the map to set the exact location in Vellore district (OpenStreetMap)</p>
+              <div id="leaflet-map"></div>
+              {form.location && <div style={{ marginTop: "0.6rem", fontSize: "0.8rem", color: "var(--accent2)", fontFamily: "DM Mono, monospace" }}>📌 {form.location}</div>}
+            </div>
           </div>
         </div>
       </div>
@@ -589,7 +580,6 @@ function ReportPage({ onSubmit }) {
   );
 }
 
-// ─── PAGE: MAP VIEW ────────────────────────────────────────────
 function MapPage({ items }) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -610,7 +600,8 @@ function MapPage({ items }) {
     if (!mapLoaded || !window.L) return;
     const el = document.getElementById("browse-map");
     if (!el || el._leaflet_id) return;
-    const map = window.L.map("browse-map").setView([40.7128, -74.006], 12);
+    // Centered on Vellore city
+    const map = window.L.map("browse-map").setView([12.9165, 79.1325], 13);
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
     }).addTo(map);
@@ -628,36 +619,37 @@ function MapPage({ items }) {
 
   return (
     <main>
-      <div className="page-header">
-        <h2>Map View</h2>
-        <div className="divider"></div>
-        <p>All reported items on an interactive map. Click a pin to see details.</p>
-      </div>
-      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
-        <span className="badge badge-lost">🔍 Lost Items</span>
-        <span className="badge badge-found">✅ Found Items</span>
-      </div>
-      <div id="browse-map" style={{ height: "500px", borderRadius: "8px", border: "1px solid var(--border)" }}></div>
-      {selected && (
-        <div className="form-card" style={{ marginTop: "1.5rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-            <div>
-              <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>{selected.image}</div>
-              <h3 style={{ fontWeight: 700, marginBottom: "0.4rem" }}>{selected.title}</h3>
-              <div style={{ display: "flex", gap: "0.5rem" }}><StatusBadge type={selected.type} /><StatusBadge variant="category" category={selected.category} /></div>
-            </div>
-            <button className="close-btn" onClick={() => setSelected(null)}>✕</button>
-          </div>
-          <p style={{ marginTop: "0.75rem", fontSize: "0.88rem", color: "var(--muted)" }}>📍 {selected.location}</p>
-          <p style={{ marginTop: "0.5rem", fontSize: "0.88rem" }}>{selected.description}</p>
+      <div className="main-inner">
+        <div className="page-header">
+          <h2>Map View</h2>
+          <div className="divider"></div>
+          <p>All reported items across Vellore district on an interactive map. Click a pin to see details.</p>
         </div>
-      )}
-      {!selected && <p style={{ textAlign: "center", marginTop: "1rem", color: "var(--muted)", fontSize: "0.85rem" }}>Click any map pin to see item details</p>}
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>
+          <span className="badge badge-lost">🔍 Lost Items</span>
+          <span className="badge badge-found">✅ Found Items</span>
+        </div>
+        <div id="browse-map" style={{ height: "500px", borderRadius: "8px", border: "1px solid var(--border)" }}></div>
+        {selected && (
+          <div className="form-card" style={{ marginTop: "1.5rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div>
+                <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>{selected.image}</div>
+                <h3 style={{ fontWeight: 700, marginBottom: "0.4rem" }}>{selected.title}</h3>
+                <div style={{ display: "flex", gap: "0.5rem" }}><StatusBadge type={selected.type} /><StatusBadge variant="category" category={selected.category} /></div>
+              </div>
+              <button className="close-btn" onClick={() => setSelected(null)}>✕</button>
+            </div>
+            <p style={{ marginTop: "0.75rem", fontSize: "0.88rem", color: "var(--muted)" }}>📍 {selected.location}</p>
+            <p style={{ marginTop: "0.5rem", fontSize: "0.88rem" }}>{selected.description}</p>
+          </div>
+        )}
+        {!selected && <p style={{ textAlign: "center", marginTop: "1rem", color: "var(--muted)", fontSize: "0.85rem" }}>Click any map pin to see item details</p>}
+      </div>
     </main>
   );
 }
 
-// ─── PAGE: CONTACT ─────────────────────────────────────────────
 function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
@@ -678,7 +670,7 @@ function ContactPage() {
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
-          system: "You are a helpful customer support assistant for a lost and found website. Generate a warm, professional acknowledgment reply to the user's message. Keep it under 60 words.",
+          system: "You are a helpful customer support assistant for a lost and found website serving Vellore district, Tamil Nadu, India. Generate a warm, professional acknowledgment reply to the user's message. Keep it under 60 words.",
           messages: [{ role: "user", content: `Name: ${form.name}. Subject: ${form.subject}. Message: ${form.message}` }]
         })
       });
@@ -692,67 +684,68 @@ function ContactPage() {
 
   return (
     <main>
-      <div className="page-header">
-        <h2>Contact Us</h2>
-        <div className="divider"></div>
-        <p>Have a question, suggestion, or need help? We're here for you.</p>
-      </div>
-      <div className="contact-grid">
-        <div className="info-card">
-          <h3>Get in Touch</h3>
-          {[["📧","Email Support","support@lostandfound.io"],["📞","Phone","(555) 123-4567 — Mon-Fri 9am–6pm"],["📍","Office","123 Main St, New York, NY 10001"],["⏰","Response Time","Within 24 hours on business days"]].map(([icon,title,detail]) => (
-            <div key={title} className="info-item">
-              <span className="info-icon">{icon}</span>
-              <div className="info-text"><strong>{title}</strong><span>{detail}</span></div>
-            </div>
-          ))}
-          <div style={{ marginTop: "2rem", padding: "1rem", background: "rgba(255,255,255,0.08)", borderRadius: "6px" }}>
-            <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>🤖 AI-Powered Support</div>
-            <div style={{ fontSize: "0.82rem", opacity: 0.7, lineHeight: 1.6 }}>Submit your message below and receive an instant AI-generated acknowledgment powered by Claude.</div>
-          </div>
+      <div className="main-inner">
+        <div className="page-header">
+          <h2>Contact Us</h2>
+          <div className="divider"></div>
+          <p>Have a question, suggestion, or need help? We're here for you.</p>
         </div>
-        <div className="form-card">
-          <div className="form-title">✉️ Send a Message</div>
-          {!sent ? (
-            <form onSubmit={handleSubmit}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                {[["name","Your Name *","text"],["email","Email *","email"]].map(([n,l,t]) => (
-                  <div key={n} className="form-group" style={{ margin: 0 }}>
-                    <label className="form-label">{l}</label>
-                    <input className="form-input" name={n} type={t} value={form[n]} onChange={handleField} />
-                  </div>
-                ))}
+        <div className="contact-grid">
+          <div className="info-card">
+            <h3>Get in Touch</h3>
+            {[["📧","Email Support","support@vellorelf.in"],["📞","Phone","(0416) 123-4567 — Mon-Fri 9am–6pm"],["📍","Office","Gandhi Road, Vellore, Tamil Nadu 632001"],["⏰","Response Time","Within 24 hours on business days"]].map(([icon,title,detail]) => (
+              <div key={title} className="info-item">
+                <span className="info-icon">{icon}</span>
+                <div className="info-text"><strong>{title}</strong><span>{detail}</span></div>
               </div>
-              <div className="form-group" style={{ marginTop: "1rem" }}>
-                <label className="form-label">Subject</label>
-                <input className="form-input" name="subject" value={form.subject} onChange={handleField} placeholder="e.g. Help finding my item" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Message *</label>
-                <textarea className="form-textarea" name="message" rows={5} value={form.message} onChange={handleField} placeholder="Describe your issue or question..." />
-              </div>
-              <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>Send Message 📤</button>
-            </form>
-          ) : (
-            <div>
-              <div className="success-msg">✅ Your message has been sent successfully!</div>
-              {aiLoading ? (
-                <div className="loading" style={{ marginTop: "1rem" }}><div className="spinner"></div> AI is composing a reply...</div>
-              ) : aiReply && (
-                <div className="ai-result" style={{ marginTop: "1rem" }}>
-                  <strong>🤖 Automated Reply:</strong><br />{aiReply}
-                </div>
-              )}
-              <button className="btn btn-outline" style={{ marginTop: "1.25rem" }} onClick={() => { setSent(false); setAiReply(""); setForm({ name:"",email:"",subject:"",message:"" }); }}>Send Another Message</button>
+            ))}
+            <div style={{ marginTop: "2rem", padding: "1rem", background: "rgba(255,255,255,0.08)", borderRadius: "6px" }}>
+              <div style={{ fontWeight: 600, marginBottom: "0.5rem" }}>🤖 AI-Powered Support</div>
+              <div style={{ fontSize: "0.82rem", opacity: 0.7, lineHeight: 1.6 }}>Submit your message below and receive an instant AI-generated acknowledgment powered by Claude.</div>
             </div>
-          )}
+          </div>
+          <div className="form-card">
+            <div className="form-title">✉️ Send a Message</div>
+            {!sent ? (
+              <form onSubmit={handleSubmit}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                  {[["name","Your Name *","text"],["email","Email *","email"]].map(([n,l,t]) => (
+                    <div key={n} className="form-group" style={{ margin: 0 }}>
+                      <label className="form-label">{l}</label>
+                      <input className="form-input" name={n} type={t} value={form[n]} onChange={handleField} />
+                    </div>
+                  ))}
+                </div>
+                <div className="form-group" style={{ marginTop: "1rem" }}>
+                  <label className="form-label">Subject</label>
+                  <input className="form-input" name="subject" value={form.subject} onChange={handleField} placeholder="e.g. Help finding my item" />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Message *</label>
+                  <textarea className="form-textarea" name="message" rows={5} value={form.message} onChange={handleField} placeholder="Describe your issue or question..." />
+                </div>
+                <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center" }}>Send Message 📤</button>
+              </form>
+            ) : (
+              <div>
+                <div className="success-msg">✅ Your message has been sent successfully!</div>
+                {aiLoading ? (
+                  <div className="loading" style={{ marginTop: "1rem" }}><div className="spinner"></div> AI is composing a reply...</div>
+                ) : aiReply && (
+                  <div className="ai-result" style={{ marginTop: "1rem" }}>
+                    <strong>🤖 Automated Reply:</strong><br />{aiReply}
+                  </div>
+                )}
+                <button className="btn btn-outline" style={{ marginTop: "1.25rem" }} onClick={() => { setSent(false); setAiReply(""); setForm({ name:"",email:"",subject:"",message:"" }); }}>Send Another Message</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
   );
 }
 
-// ─── ROOT APP ─────────────────────────────────────────────────
 export default function App() {
   const [page, setPage] = useState("home");
   const [items, setItems] = useState(MOCK_ITEMS);
@@ -780,7 +773,7 @@ export default function App() {
       <nav>
         <div className="nav-logo" onClick={() => setPage("home")}>
           <span>L</span>&amp;<span>F</span>
-          <span style={{ fontSize: "0.9rem", fontFamily: "DM Sans, sans-serif", fontWeight: 400, opacity: 0.6, letterSpacing: 1 }}>LOST &amp; FOUND</span>
+          <span style={{ fontSize: "0.9rem", fontFamily: "DM Sans, sans-serif", fontWeight: 400, opacity: 0.6, letterSpacing: 1 }}>VELLORE LOST & FOUND</span>
         </div>
         <div className="nav-links">
           {PAGES.map(p => (
@@ -797,7 +790,7 @@ export default function App() {
       {page === "contact" && <ContactPage />}
 
       <footer>
-        <strong>Lost &amp; Found</strong> — Community-Powered Item Recovery Platform<br />
+        <strong>Vellore Lost & Found</strong> — Community-Powered Item Recovery for Vellore District, Tamil Nadu<br />
         <span style={{ fontSize: "0.75rem", marginTop: "0.3rem", display: "block" }}>
           Powered by OpenStreetMap (Leaflet) · Claude AI API · Built with React
         </span>
