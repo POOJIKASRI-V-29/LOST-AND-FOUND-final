@@ -474,7 +474,7 @@ function ReportPage({ onSubmit }) {
     if (!mapLoaded || !window.L) return;
     const existing = document.getElementById("leaflet-map");
     if (!existing || existing._leaflet_id) return;
-    const map = window.L.map("leaflet-map").setView([40.7128, -74.006], 12);
+    const map = window.L.map("leaflet-map").setView([12.9352, 79.1322], 12);
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
     }).addTo(map);
@@ -634,7 +634,7 @@ function MapPage({ items }) {
     if (!mapLoaded || !window.L) return;
     const el = document.getElementById("browse-map");
     if (!el || el._leaflet_id) return;
-    const map = window.L.map("browse-map").setView([40.7128, -74.006], 12);
+    const map = window.L.map("browse-map").setView([12.9352, 79.1322], 12);
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors"
     }).addTo(map);
