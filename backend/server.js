@@ -3,10 +3,11 @@
 // 2. npm install express mongodb cors dotenv
 // 3. node server.js
 
-require("dotenv").config();
-const express = require("express");
-const cors    = require("cors");
-const { MongoClient, ObjectId } = require("mongodb");
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import cors from "cors";
+import { MongoClient, ObjectId } from "mongodb";
 
 const app       = express();
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017";
