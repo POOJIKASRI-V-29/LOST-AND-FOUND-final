@@ -1,7 +1,9 @@
 Lost & Found Management System
+
 A modern web-based platform designed to help students and staff report, search, and recover lost belongings efficiently within a campus environment.
 
 Overview
+
 Lost & Found Management System simplifies the process of reporting and claiming lost items. Instead of relying on notice boards, WhatsApp groups, or manual records, users can post lost/found items, search existing listings, and connect with item owners securely.
 The platform aims to improve recovery rates, reduce manual effort, and create a centralized repository for lost-and-found activities.
 
