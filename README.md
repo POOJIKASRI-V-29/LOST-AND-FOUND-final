@@ -1,85 +1,170 @@
 Lost & Found Management System
 
-A modern web-based platform designed to help students and staff report, search, and recover lost belongings efficiently within a campus environment.
+A full-stack web application that helps students and staff report, search, and recover lost belongings efficiently within a campus environment.
+
+Live Demo
+
+Frontend: https://lost-and-found-final-ten.vercel.app/
+
+Backend API: https://lost-and-found-final-m35j.onrender.com
+
+---
 
 Overview
 
-Lost & Found Management System simplifies the process of reporting and claiming lost items. Instead of relying on notice boards, WhatsApp groups, or manual records, users can post lost/found items, search existing listings, and connect with item owners securely.
-The platform aims to improve recovery rates, reduce manual effort, and create a centralized repository for lost-and-found activities.
+The Lost & Found Management System provides a centralized platform for reporting and managing lost and found items. Users can post item details, browse listings, search for belongings, and connect with finders or owners.
 
 ---
+
 Features
 
 User Features
-- User Registration & Login
-- Secure Authentication
-- Report Lost Items
-- Report Found Items
-- Upload Item Images
-- Search Lost/Found Listings
-- Filter Items by Category
-- View Item Details
-- Contact Item Owner/Finder
-- Track Claim Status
 
-Admin Features
-- Dashboard Overview
-- Manage Users
-- Manage Item Listings
-- Approve/Reject Reports
-- Monitor Claims
-- Remove Spam or Invalid Posts
+* Report Lost Items
+* Report Found Items
+* Upload Item Information
+* Search and Filter Listings
+* View Item Details
+* Contact Item Owners/Finders
+* Responsive User Interface
 
----
+System Features
 
-System Workflow
-
-1. User logs into the platform.
-2. User reports a lost or found item.
-3. Item details are stored in the database.
-4. Other users can search and browse listings.
-5. Potential matches are identified manually.
-6. Owner and finder connect through the platform.
-7. Item is successfully returned.
+* REST API Integration
+* MongoDB Database Storage
+* Real-Time Data Management
+* Secure Backend Architecture
 
 ---
 
 Tech Stack
 
 Frontend
-- React.js
-- HTML5
-- CSS3
-- JavaScript
-- Tailwind CSS
+
+* React.js
+* Vite
+* CSS
 
 Backend
-- Node.js
-- Express.js
+
+* Node.js
+* Express.js
 
 Database
-- MongoDB
 
-Tools
-- Git & GitHub
-- VS Code
-- Postman
+* MongoDB Atlas
+
+Deployment
+
+* Vercel (Frontend)
+* Render (Backend)
 
 ---
 
 Project Structure
 
+
 LOST-AND-FOUND-final/
+│
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   └── package.json
+│
 ├── backend/
-│   ├── package.json        # Express + MongoDB dependencies
-│   └── server.js           # REST API server (Express 5, ESM)
-└── frontend/
-    ├── package.json        # React + Vite dependencies
-    ├── vite.config.js
-    └── src/
-        └── App.jsx         # Entire React app (single-file SPA)
+│   ├── server.js
+│   └── package.json
+│
+└── README.md
+
+
+Local Setup
+
+Clone Repository
+
+
+git clone https://github.com/POOJIKASRI-V-29/LOST-AND-FOUND-final.git
+cd LOST-AND-FOUND-final
+
+
+### Backend Setup
+
+```bash
+cd backend
+npm install
+npm start
+```
+
+### Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
 ---
 
-Author
-POOJIKASRI V — github.com/POOJIKASRI-V-29
+## 🌐 Environment Variables
+
+### Backend
+
+Create a `.env` file inside the backend folder:
+
+```env
+MONGO_URI=your_mongodb_connection_string
+PORT=3001
+```
+
+### Frontend
+
+Create a `.env` file inside the frontend folder:
+
+```env
+VITE_API_URL=http://localhost:3001
+```
+
+---
+
+## 📸 Screenshots
+
+### Home Page
+
+(Add Screenshot)
+
+### Lost Item Submission
+
+(Add Screenshot)
+
+### Found Item Listing
+
+(Add Screenshot)
+
+### Search Results
+
+(Add Screenshot)
+
+---
+
+## 🎯 Future Enhancements
+
+* User Authentication
+* Email Notifications
+* AI-Based Item Matching
+* Image Recognition
+* QR-Based Claim Verification
+* Mobile Application
+
+---
+
+## 👩‍💻 Author
+
+**Poojikasri V**
+
+GitHub: https://github.com/POOJIKASRI-V-29
+
+---
+
+## 📜 License
+
+This project is intended for educational and academic purposes.
