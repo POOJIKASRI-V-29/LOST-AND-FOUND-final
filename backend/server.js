@@ -3,7 +3,8 @@
 // 2. npm install express mongodb cors dotenv
 // 3. node server.js
 
-require("dotenv").config();
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import cors from "cors";
 import { MongoClient, ObjectId } from "mongodb";
